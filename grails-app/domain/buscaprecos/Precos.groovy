@@ -2,18 +2,20 @@ package buscaprecos
 
 class Precos {
 
-    Double precoIda
-    Double precoVolta
-    Date dataIda
-    Date dataVolta
+    String tipo
+    Double preco
+    Date data
     String origem
     String destino
-    Date horaIda
-    Date horaChegada
     Date dataConsulta
-    Date horaConsulta
+
 
 
     static constraints = {
+        tipo nullable: false, inList: ["IDA","VOLTA"]
+    }
+
+    String toString(){
+        return tipo + ' ' + preco + ' ' + data + ' ' + origem + ' ' + destino + ' '+ dataConsulta
     }
 }

@@ -1,5 +1,7 @@
 package buscaprecos
 
+import grails.converters.JSON
+
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 
@@ -105,11 +107,25 @@ class PrecosController {
         }
     }
 
-    def buscaPrecos
+    def buscaPrecos /*Codigo Legado Java*/
+    def buscaPrecosParserService /*Regras de Negocio*/
+
+
+
+
 
     def buscaCotacoes(){
-        String tabela = buscaPrecos.busca()
+        String voosIdaVolta = buscaPrecos.busca("NAT","YYZ","201709120000","201710100000","2","2")
 
-        render(view:"resultado",model:[tabela:tabela])
+
+        buscaPrecosParserService.precosIda(voosIdaVolta,"NAT","YYZ","201709120000")
+        buscaPrecosParserService.precosVolta(voosIdaVolta,"YYZ","NAT","201710100000");
+
+
+
+        def tabela =  Precos.findAll() as JSON//valoresIda as JSON
+
+
+        render(view:"resultado",model:[gridData:tabela])
     }
 }
