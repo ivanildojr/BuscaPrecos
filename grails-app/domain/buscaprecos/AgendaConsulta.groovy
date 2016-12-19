@@ -2,20 +2,22 @@ package buscaprecos
 
 class AgendaConsulta {
 
-    String horaConsulta
+    Date horaConsulta //= new Date().getTimeString()
     String origem
     String destino
     Date dataIda
     Date dataVolta
-    Integer duracao
+    Integer adultos
+    Integer criancas
 
 
     static constraints = {
-        horaConsulta nullable: false
         origem nullable: false, inList: ["NAT","YYZ"]
         destino nullable: false, inList: ["YYZ","NAT"]
         dataIda nullable: false
         dataVolta nullable: false
-        duracao nullable: false
+        adultos nullable: false
+        criancas nullable: false
+        horaConsulta nullable: false
     }
 }

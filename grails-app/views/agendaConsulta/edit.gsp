@@ -29,7 +29,12 @@
             <g:form resource="${this.agendaConsulta}" method="PUT">
                 <g:hiddenField name="version" value="${this.agendaConsulta?.version}" />
                 <fieldset class="form">
-                    <f:all bean="agendaConsulta"/>
+                    <f:all bean="agendaConsulta" except="horaConsulta"/>
+                    <div class="fieldcontain required">
+                        <label for="horaConsulta">Hora para Início da Busca </label>
+                        <span class="required-indicator">*</span>
+                        <g:datePicker name="horaConsulta" bean="agedaConsulta"/>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />

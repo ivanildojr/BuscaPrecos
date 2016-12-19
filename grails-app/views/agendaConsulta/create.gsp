@@ -4,6 +4,7 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'agendaConsulta.label', default: 'AgendaConsulta')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
+        <asset:javascript src="jquery-2.2.0.min.js"/>
     </head>
     <body>
         <a href="#create-agendaConsulta" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
@@ -27,12 +28,18 @@
             </g:hasErrors>
             <g:form action="save">
                 <fieldset class="form">
-                    <f:all bean="agendaConsulta"/>
+                    <f:all bean="agendaConsulta" except="horaConsulta"/>
+                    <div class="fieldcontain required">
+                        <label for="horaConsulta">Hora para Início da Busca </label>
+                        <span class="required-indicator">*</span>
+                        <g:datePicker name="horaConsulta" bean="agedaConsulta"/>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>
             </g:form>
         </div>
+
     </body>
 </html>

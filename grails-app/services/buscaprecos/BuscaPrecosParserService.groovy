@@ -8,12 +8,12 @@ import org.jsoup.select.Elements
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.phantomjs.PhantomJSDriver
 import org.openqa.selenium.remote.DesiredCapabilities
+import org.springframework.scheduling.annotation.Scheduled
 
 import java.text.NumberFormat
 
 @Transactional
 class BuscaPrecosParserService {
-
     def precosIda(String precos,String origem, String destino, String dataIda){
         /*Obtem os precos de ida*/
         Document doc = Jsoup.parse(precos);

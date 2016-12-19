@@ -1,6 +1,7 @@
 package buscaprecos
 
 import grails.converters.JSON
+import org.springframework.scheduling.annotation.Scheduled
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
@@ -107,15 +108,17 @@ class PrecosController {
         }
     }
 
-    def buscaPrecos /*Codigo Legado Java*/
+//    def buscaPrecos /*Codigo Legado Java*/
     def buscaPrecosParserService /*Regras de Negocio*/
 
 
 
 
 
+
     def buscaCotacoes(){
-        String voosIdaVolta = buscaPrecos.busca("NAT","YYZ","201709120000","201710100000","2","2")
+
+//        String voosIdaVolta = buscaPrecos.busca("NAT","YYZ","201709120000","201710100000","2","2")
 
 
         buscaPrecosParserService.precosIda(voosIdaVolta,"NAT","YYZ","201709120000")
