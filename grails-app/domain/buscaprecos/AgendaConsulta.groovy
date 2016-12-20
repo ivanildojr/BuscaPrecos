@@ -9,6 +9,9 @@ class AgendaConsulta {
     Date dataVolta
     Integer adultos
     Integer criancas
+    Integer duracao
+    Date dataLimiteSaida
+    Boolean jobRodando = false
 
 
     static constraints = {
@@ -19,5 +22,8 @@ class AgendaConsulta {
         adultos nullable: false
         criancas nullable: false
         horaConsulta nullable: false
+        jobRodando nullable:  false
+        duracao nullable: false
+        dataLimiteSaida nullable: false
     }
 }

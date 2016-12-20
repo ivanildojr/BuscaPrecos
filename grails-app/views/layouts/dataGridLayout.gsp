@@ -29,7 +29,7 @@
                 multiple: true
             },
             paging: {
-                pageSize: 12,
+                pageSize: 17,
                 pageLinksCount: 10
             },
             selection:{
@@ -43,8 +43,8 @@
                 { field: "tipo", title:"IDA / VOLTA", width: "270px" },
                 { field: "data", title: "Data da Viagem" },
                 { field: "dataConsulta", title: "Data da Consulta" },
-                { field: "destino", title:"Destino", width: "270px" },
-                { field: "origem", title:"Origem", width: "270px" }
+                { field: "origem", title:"Origem", width: "270px" },
+                { field: "destino", title:"Destino", width: "270px" }
 
             ]
         });

@@ -40,7 +40,7 @@ class BuscaPrecosParserService {
             preco.data = dataFinal
             preco.origem = origem
             preco.destino = destino
-            preco.dataConsulta = new Date().clearTime()
+            preco.dataConsulta = new Date()
             preco.save(flush:true)
             lista.add(preco);
         }
@@ -72,9 +72,9 @@ class BuscaPrecosParserService {
             Date dataFinal = Date.parse("dd/MM/yyyy",dataFormatada)
 
             preco.data = dataFinal
-            preco.origem = origem
-            preco.destino = destino
-            preco.dataConsulta = new Date().clearTime()
+            preco.origem = destino
+            preco.destino = origem
+            preco.dataConsulta = new Date()
             preco.save(flush:true)
             lista.add(preco);
         }

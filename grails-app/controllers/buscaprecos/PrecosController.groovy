@@ -108,27 +108,9 @@ class PrecosController {
         }
     }
 
-//    def buscaPrecos /*Codigo Legado Java*/
-    def buscaPrecosParserService /*Regras de Negocio*/
-
-
-
-
-
-
     def buscaCotacoes(){
 
-//        String voosIdaVolta = buscaPrecos.busca("NAT","YYZ","201709120000","201710100000","2","2")
-
-
-        buscaPrecosParserService.precosIda(voosIdaVolta,"NAT","YYZ","201709120000")
-        buscaPrecosParserService.precosVolta(voosIdaVolta,"YYZ","NAT","201710100000");
-
-
-
         def tabela =  Precos.findAll() as JSON//valoresIda as JSON
-
-
         render(view:"resultado",model:[gridData:tabela])
     }
 }

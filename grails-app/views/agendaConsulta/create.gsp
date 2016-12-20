@@ -28,7 +28,7 @@
             </g:hasErrors>
             <g:form action="save">
                 <fieldset class="form">
-                    <f:all bean="agendaConsulta" except="horaConsulta"/>
+                    <f:all bean="agendaConsulta" except="horaConsulta,jobRodando"/>
                     <div class="fieldcontain required">
                         <label for="horaConsulta">Hora para Início da Busca </label>
                         <span class="required-indicator">*</span>

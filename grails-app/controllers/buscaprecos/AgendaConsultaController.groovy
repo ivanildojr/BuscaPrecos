@@ -13,44 +13,53 @@ class AgendaConsultaController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-
+    def repeticaoBusca = 6
 
     def schedule(){
-        String dataFormatada = Date.parse("yyyy-MM-dd HH:mm:ss",params.horaConsulta).format("dd/MM/yyyy")
-        Date dataFinal = Date.parse("dd/MM/yyyy",dataFormatada)
-        println params.horaConsulta
-        println dataFinal
 
-        Trigger trigger = TriggerBuilder
-                .newTrigger()
-                .withIdentity(params.id,"Busca")
-                //.startNow()
-                .startAt(Date.parse("yyyy-MM-dd HH:mm:ss",params.horaConsulta))
-                .withSchedule(
+        def agenda = AgendaConsulta.findById(params.id)
+        println "Job está rodando: " +agenda.jobRodando
+        if(!agenda.jobRodando) {
+            String dataFormatada = Date.parse("yyyy-MM-dd HH:mm:ss", params.horaConsulta).format("dd/MM/yyyy")
+            Date dataFinal = Date.parse("dd/MM/yyyy", dataFormatada)
+            Trigger trigger = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity(params.id, "Busca")
+            //.startNow()
+                    .startAt(Date.parse("yyyy-MM-dd HH:mm:ss", params.horaConsulta))
+                    .withSchedule(
                     SimpleScheduleBuilder.simpleSchedule()
                     /*Alterar para intervalor de horas fixo*/
-                                                .withIntervalInSeconds(1).repeatForever()
-                )
-                .usingJobData("origem",params.origem)
-                .usingJobData("destino",params.destino)
-                .usingJobData("dataIda",params.dataIda)
-                .usingJobData("dataVolta",params.dataVolta)
-                .usingJobData("adultos",params.adultos)
-                .usingJobData("criancas",params.criancas)
-                .build();
+                            .withIntervalInHours(repeticaoBusca).repeatForever()
+            )
+                    .usingJobData("origem", params.origem)
+                    .usingJobData("destino", params.destino)
+                    .usingJobData("dataIda", params.dataIda)
+                    .usingJobData("dataVolta", params.dataVolta)
+                    .usingJobData("adultos", params.adultos)
+                    .usingJobData("criancas", params.criancas)
+                    .usingJobData("duracao", params.duracao)
+                    .usingJobData("dataLimiteSaida", params.dataLimiteSaida)
+                    .build();
 
 
 
-        BuscaPassagemJob.schedule(trigger)
+            BuscaPassagemJob.schedule(trigger)
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'agendaConsulta.label', default: 'Job'), params.id])
-        redirect(controller:"agendaConsulta",view:"index")
-
+            flash.message = message(code: 'default.created.message', args: [message(code: 'agendaConsulta.label', default: 'Job'), params.id])
+            redirect(controller: "agendaConsulta", view: "index")
+        }else {
+            flash.message = message(code: 'default.job.existe', args: [message(code: 'agendaConsulta.label', default: 'Job'), params.id])
+            redirect(controller: "agendaConsulta", view: "index")
+        }
     }
     def unschedule(){
         println "Job:" + params.id + "encerrado"
         BuscaPassagemJob.unschedule(params.id,"Busca")
-
+        def agenda = AgendaConsulta.findById(params.id)
+        println "Job foi encerrado: " +agenda.jobRodando
+        agenda.jobRodando = false
+        agenda.save flush:true
 
         flash.message = message(code: 'default.deleted.message', args: [message(code: 'agendaConsulta.label', default: 'Job'), params.id])
         redirect(controller:"agendaConsulta",view:"index")
@@ -66,7 +75,21 @@ class AgendaConsultaController {
             if(!it.name.equalsIgnoreCase("version") && !it.name.equalsIgnoreCase("id"))
             fields.add(it.name)
         }
-        respond AgendaConsulta.list(params), model:[agendaConsultaCount: AgendaConsulta.count(), fields:fields]
+        fields.add("Jobs")
+
+        List finalFields = new ArrayList()
+        finalFields.add(fields.get(fields.indexOf("origem")))
+        finalFields.add(fields.get(fields.indexOf("destino")))
+        finalFields.add(fields.get(fields.indexOf("dataIda")))
+        finalFields.add(fields.get(fields.indexOf("dataVolta")))
+        finalFields.add(fields.get(fields.indexOf("horaConsulta")))
+        finalFields.add(fields.get(fields.indexOf("adultos")))
+        finalFields.add(fields.get(fields.indexOf("criancas")))
+        finalFields.add(fields.get(fields.indexOf("duracao")))
+        finalFields.add(fields.get(fields.indexOf("dataLimiteSaida")))
+        finalFields.add(fields.get(fields.indexOf("Jobs")))
+
+        respond AgendaConsulta.list(params), model:[agendaConsultaCount: AgendaConsulta.count(), fields:finalFields]
     }
 
     def show(AgendaConsulta agendaConsulta) {
@@ -94,12 +117,39 @@ class AgendaConsultaController {
         }
 
 
-
+        agendaConsulta.jobRodando = true
         agendaConsulta.save flush:true
+
+        /* Inicial Job*/
+        String dataFormatada = agendaConsulta.horaConsulta.format("dd/MM/yyyy")
+        Date dataFinal = Date.parse("dd/MM/yyyy",dataFormatada)
+
+        Trigger trigger = TriggerBuilder
+                .newTrigger()
+                .withIdentity(agendaConsulta.id.toString(),"Busca")
+        //.startNow()
+                .startAt(Date.parse("yyyy-MM-dd HH:mm:ss",agendaConsulta.horaConsulta.format("yyyy-MM-dd HH:mm:ss")))
+                .withSchedule(
+                SimpleScheduleBuilder.simpleSchedule()
+                /*Alterar para intervalor de horas fixo*/
+                        .withIntervalInHours(repeticaoBusca).repeatForever()
+        )
+                .usingJobData("origem",agendaConsulta.origem)
+                .usingJobData("destino",agendaConsulta.destino)
+                .usingJobData("dataIda",agendaConsulta.dataIda.format("yyyy-MM-dd HH:mm:ss"))
+                .usingJobData("dataVolta",agendaConsulta.dataVolta.format("yyyy-MM-dd HH:mm:ss"))
+                .usingJobData("adultos",agendaConsulta.adultos.toString())
+                .usingJobData("criancas",agendaConsulta.criancas.toString())
+                .usingJobData("duracao", agendaConsulta.duracao.toString())
+                .usingJobData("dataLimiteSaida", agendaConsulta.dataLimiteSaida.format("yyyy-MM-dd HH:mm:ss"))
+                .build();
+        BuscaPassagemJob.schedule(trigger)
+        /**/
+
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'agendaConsulta.label', default: 'AgendaConsulta'), agendaConsulta.id])
+                flash.message = message(code: 'default.created.message', args: [message(code: 'agendaConsulta.label', default: 'AgendaConsulta e Job'), agendaConsulta.id])
                 redirect agendaConsulta
             }
             '*' { respond agendaConsulta, [status: CREATED] }

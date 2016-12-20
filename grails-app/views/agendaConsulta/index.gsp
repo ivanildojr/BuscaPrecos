@@ -40,8 +40,10 @@
                                 <td>${p.horaConsulta}</td>
                                 <td>${p.adultos}</td>
                                 <td>${p.criancas}</td>
+                                <td>${p.duracao}</td>
+                                <td>${p.dataLimiteSaida}</td>
                                 <td>
-                                    <g:link controller="agendaConsulta" action="schedule" params="[id: p.id, origem: p.origem, destino: p.destino, dataIda: p.dataIda,dataVolta:p.dataVolta,adultos:p.adultos,criancas:p.criancas,horaConsulta:p.horaConsulta]">Iniciar Job</g:link>
+                                    <g:link controller="agendaConsulta" action="schedule" params="[id: p.id, origem: p.origem, destino: p.destino, dataIda: p.dataIda,dataVolta:p.dataVolta,adultos:p.adultos,criancas:p.criancas,horaConsulta:p.horaConsulta,duracao:p.duracao,dataLimiteSaida:p.dataLimiteSaida]">Iniciar Job</g:link>
                                     <br>
                                     <g:link controller="agendaConsulta" action="unschedule" params="[id: p.id]">Remover Job</g:link>
                                 </td>
