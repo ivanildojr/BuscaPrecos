@@ -15,8 +15,8 @@ class AgendaConsulta {
 
 
     static constraints = {
-        origem nullable: false, inList: ["NAT","YYZ"]
-        destino nullable: false, inList: ["YYZ","NAT"]
+        origem nullable: false//, inList: ["NAT","YYZ"]
+        destino nullable: false//, inList: ["YYZ","NAT"]
         dataIda nullable: false
         dataVolta nullable: false
         adultos nullable: false
