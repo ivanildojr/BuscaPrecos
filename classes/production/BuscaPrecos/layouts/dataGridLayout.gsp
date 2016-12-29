@@ -29,7 +29,7 @@
                 multiple: true
             },
             paging: {
-                pageSize: 12,
+                pageSize: 17,
                 pageLinksCount: 10
             },
             selection:{
@@ -41,10 +41,10 @@
                 { field: "id", width: "70px", title: "ID" },
                 { field: "preco", title:"Preço (R$)", width: "270px" },
                 { field: "tipo", title:"IDA / VOLTA", width: "270px" },
-                { field: "data", title: "Data de Ida" },
+                { field: "data", title: "Data da Viagem" },
                 { field: "dataConsulta", title: "Data da Consulta" },
-                { field: "destino", title:"Destino", width: "270px" },
-                { field: "origem", title:"Origem", width: "270px" }
+                { field: "origem", title:"Origem", width: "270px" },
+                { field: "destino", title:"Destino", width: "270px" }
 
             ]
         });

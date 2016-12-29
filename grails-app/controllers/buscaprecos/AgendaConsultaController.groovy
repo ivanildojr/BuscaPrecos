@@ -1,5 +1,6 @@
 package buscaprecos
 
+import grails.converters.JSON
 import org.grails.core.DefaultGrailsDomainClass
 import org.quartz.SimpleScheduleBuilder
 import org.quartz.Trigger
@@ -14,6 +15,25 @@ class AgendaConsultaController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def repeticaoBusca = 6
+
+    def buscaAeroportos(String codigo){
+        println codigo
+
+//        def aeroportos = AirportCodes.findAllByIata_codeOrNameLike(codigo,"%"+codigo+"%")
+        def aeroportos = AirportCodes.findAllByNameLikeOrMunicipalityLikeOrIata_code("%"+codigo+"%","%"+codigo+"%",codigo)
+//        println aeroportos.iata_code + " - " + aeroportos.name
+
+        List<String> array = new ArrayList()
+        aeroportos.each {
+            array.add(it.iata_code + " - " + it.name)
+
+        }
+//        println array
+//        render aeroportos as JSON
+        render array as JSON
+
+
+    }
 
     def schedule(){
 

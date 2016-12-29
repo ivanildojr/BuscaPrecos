@@ -4,6 +4,9 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'precos.label', default: 'Precos')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
+        <asset:javascript src="jquery-2.2.0.min.js"/>
+        <asset:javascript src="jquery-ui.js"/>
+        <asset:stylesheet src="jquery-ui.css"/>
     </head>
     <body>
         <a href="#create-precos" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
@@ -27,12 +30,73 @@
             </g:hasErrors>
             <g:form action="save">
                 <fieldset class="form">
-                    <f:all bean="precos"/>
+                    <div class="ui-widget">
+                        <f:field property="origem" bean="precos"/>
+                    </div>
+
+                    <div class="ui-widget">
+                        <f:field property="destino" bean="precos"/>
+                    </div>
+                    <f:all bean="precos" except="origem,destino"/>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>
             </g:form>
         </div>
+
+
+    <g:javascript>
+
+        $(document).ready(function () {
+            $( "#origem" ).autocomplete({
+                    minLength: 3,
+                    source: function( request, response ) {
+                        $.ajax({
+                        url:'${g.createLink(controller: 'agendaConsulta', action: 'buscaAeroportos')}',
+                        dataType: 'json',
+                        data: {codigo: $('#origem').val()}
+                        ,
+                        success: function (data) {
+                            response(data);
+                        },
+                        error: function (request, status, error) {
+                        console.log('Deu erro');
+                        }
+                        });
+                    },
+                    change: function( event, ui ) {
+                        $("#origem").val(ui.item.value.substring(0,3));
+                    }
+
+            });
+
+            $( "#destino" ).autocomplete({
+                    minLength: 3,
+                    source: function( request, response ) {
+                        $.ajax({
+                        url:'${g.createLink(controller: 'agendaConsulta', action: 'buscaAeroportos')}',
+                        dataType: 'json',
+                        data: {codigo: $('#destino').val()}
+                        ,
+                        success: function (data) {
+                            response(data);
+                        },
+                        error: function (request, status, error) {
+                        console.log('Deu erro');
+                        }
+                        });
+                    },
+                    change: function( event, ui ) {
+                        $("#destino").val(ui.item.value.substring(0,3));
+                    }
+
+            });
+        });
+
+
+
+
+    </g:javascript>
     </body>
 </html>

@@ -14,7 +14,7 @@ class AirportCodesController {
 	def code(){
 	        JsonSlurper slurper = new JsonSlurper()
         def game
-        File f = new File("C:\\Users\\ivanildo.junior\\Downloads\\airport-codes.json")
+        File f = new File("C:\\Users\\Ivanildo JR\\Downloads\\airport-codes.json")
         f.withReader { reader ->
             game = slurper.parse(reader)
         }
