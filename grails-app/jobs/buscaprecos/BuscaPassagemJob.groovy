@@ -7,7 +7,8 @@ import org.quartz.JobExecutionException
 
 class BuscaPassagemJob implements Job{
 
-    def buscaPrecos /*Codigo Legado Java*/
+    def buscaPrecosTAM /*Codigo Legado Java*/
+    def buscaPrecosGOL /*Codigo Legado Java*/
     def buscaPrecosParserService /*Regras de Negocio*/
 
     void execute(JobExecutionContext context) throws JobExecutionException {
@@ -22,36 +23,58 @@ class BuscaPassagemJob implements Job{
         def duracao = map.get("duracao")
         def dataLimiteSaida = map.get("dataLimiteSaida")
 
-//        String dataIdaFormatada = Date.parse("yyyy-MM-dd HH:mm:ss", dataIda).format("yyyyMMdd0000")
-//        String dataVoltaFormatada = Date.parse("yyyy-MM-dd HH:mm:ss", dataVolta).format("yyyyMMdd0000")
-//
-//
-//        String voosIdaVolta = buscaPrecos.busca(origem, destino, dataIdaFormatada, dataVoltaFormatada, adultos, criancas)
-//        if (voosIdaVolta) {
-//            buscaPrecosParserService.precosIda(voosIdaVolta, origem, destino, dataIdaFormatada)
-//            buscaPrecosParserService.precosVolta(voosIdaVolta, origem, destino, dataVoltaFormatada)
-//        }
-        int count =0
+        buscaTAM(dataLimiteSaida, dataIda, duracao, origem, destino, adultos, criancas)
+        buscaGOL(dataLimiteSaida, dataIda, duracao, origem, destino, adultos, criancas)
+
+        println "Job Name: ${jobKey} - Parametros:  ${origem}-${destino}: ${dataIda} - ${dataVolta} : Adultos/Crianças: ${adultos} / ${criancas}"
+    }
+
+    private void buscaGOL(dataLimiteSaida, dataIda, duracao, origem, destino, adultos, criancas) {
+        int count = 0
         Date dataLimite = Date.parse("yyyy-MM-dd HH:mm:ss", dataLimiteSaida)
         Date dataInicio = Date.parse("yyyy-MM-dd HH:mm:ss", dataIda)
-        while(dataInicio <= dataLimite && count <= 50){
+        while (dataInicio <= dataLimite && count <= 50) {
+
+            String dataIdaFormatada = dataInicio.format("ddMMyyyy")
+            String dataVoltaFormatada = dataInicio.plus(Integer.parseInt(duracao)).format("ddMMyyyy")
+
+
+            def origemGol = AirportCodes.findAllByIata_code(origem).get(0).municipality
+            def destinoGol = AirportCodes.findAllByIata_code(destino).get(0).municipality
+
+            String voosIdaVolta = buscaPrecosGOL.busca(origemGol, destinoGol, dataIdaFormatada, dataVoltaFormatada, adultos, criancas)
+
+            if (voosIdaVolta) {
+                buscaPrecosParserService.precosIdaGOL(voosIdaVolta, origem, destino, dataIdaFormatada)
+                buscaPrecosParserService.precosVoltaGOL(voosIdaVolta, origem, destino, dataVoltaFormatada)
+            }
+
+            dataInicio = dataInicio.plus(1)
+            println "Executou :" + count + " vezes."
+            count += 1
+        }
+    }
+
+
+    private void buscaTAM(dataLimiteSaida, dataIda, duracao, origem, destino, adultos, criancas) {
+        int count = 0
+        Date dataLimite = Date.parse("yyyy-MM-dd HH:mm:ss", dataLimiteSaida)
+        Date dataInicio = Date.parse("yyyy-MM-dd HH:mm:ss", dataIda)
+        while (dataInicio <= dataLimite && count <= 50) {
 
             String dataIdaFormatada = dataInicio.format("yyyyMMdd0000")
             String dataVoltaFormatada = dataInicio.plus(Integer.parseInt(duracao)).format("yyyyMMdd0000")
 
-//            println count + " dataLimiteSaida: " + dataLimiteSaida + ' - ' + " dataInicio: " + dataInicio + " dataIdaFormatada: " + dataIdaFormatada + " - " + " dataVoltaFormatada: " + dataVoltaFormatada
 
-
-            String voosIdaVolta = buscaPrecos.busca(origem, destino, dataIdaFormatada, dataVoltaFormatada, adultos, criancas)
+            String voosIdaVolta = buscaPrecosTAM.busca(origem, destino, dataIdaFormatada, dataVoltaFormatada, adultos, criancas)
             if (voosIdaVolta) {
-                buscaPrecosParserService.precosIda(voosIdaVolta, origem, destino, dataIdaFormatada)
-                buscaPrecosParserService.precosVolta(voosIdaVolta, origem, destino, dataVoltaFormatada)
+                buscaPrecosParserService.precosIdaTAM(voosIdaVolta, origem, destino, dataIdaFormatada)
+                buscaPrecosParserService.precosVoltaTAM(voosIdaVolta, origem, destino, dataVoltaFormatada)
             }
 
             dataInicio = dataInicio.plus(1)
-            count+=1
+            println "Executou :" + count + " vezes."
+            count += 1
         }
-
-        println "Job Name: ${jobKey} - Parametros:  ${origem}-${destino}: ${dataIda} - ${dataVolta} : Adultos/Crianças: ${adultos} / ${criancas}"
     }
 }

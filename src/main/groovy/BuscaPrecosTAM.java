@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by ivanildo.junior on 14/12/2016.
  */
-public class BuscaPrecos {
+public class BuscaPrecosTAM {
     public String busca(String origem, String destino, String dataIda, String dataVolta, String qtdeAdultos, String qtdeCriancas) {
         String url = "https://book.latam.com/TAM/dyn/air/booking/upslDispatcher?"
                 + "B_LOCATION_1="+origem
@@ -44,7 +44,7 @@ public class BuscaPrecos {
         System.out.println(url);
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\ivanildo.junior\\Downloads\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, System.getenv("PHANTOMJS")+"\\phantomjs.exe");
 
 
         WebDriver ghostDriver = new PhantomJSDriver(caps);
@@ -57,11 +57,11 @@ public class BuscaPrecos {
             ida = doc.getElementById("outbound_list_flight");
             volta = doc.getElementById("inbound_list_flight");
             if(ida != null && volta != null){
-                System.out.println("<html><head></head><body>");
-                System.out.println(ida.toString());
-                System.out.println(volta.toString());
-                System.out.println("</body></html>");
-                System.out.println(ida.toString()+" ---- \n"+volta.toString());
+//                System.out.println("<html><head></head><body>");
+//                System.out.println(ida.toString());
+//                System.out.println(volta.toString());
+//                System.out.println("</body></html>");
+//                System.out.println(ida.toString()+" ---- \n"+volta.toString());
                 return ida.toString()+volta.toString();
             }
         } catch (NullPointerException n){

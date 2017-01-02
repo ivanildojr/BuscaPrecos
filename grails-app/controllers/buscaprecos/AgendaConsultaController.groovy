@@ -49,8 +49,8 @@ class AgendaConsultaController {
                     .startAt(Date.parse("yyyy-MM-dd HH:mm:ss", params.horaConsulta))
                     .withSchedule(
                     SimpleScheduleBuilder.simpleSchedule()
-                    /*Alterar para intervalor de horas fixo*/
-                            .withIntervalInHours(repeticaoBusca).repeatForever()
+                                   .withIntervalInHours(repeticaoBusca).repeatForever()
+//                            .withIntervalInSeconds(120).repeatForever()
             )
                     .usingJobData("origem", params.origem)
                     .usingJobData("destino", params.destino)

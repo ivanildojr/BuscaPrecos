@@ -39,10 +39,11 @@
             },
             columns: [
                 { field: "id", width: "70px", title: "ID" },
-                { field: "preco", title:"Preço (R$)", width: "270px" },
-                { field: "tipo", title:"IDA / VOLTA", width: "270px" },
-                { field: "data", title: "Data da Viagem" },
-                { field: "dataConsulta", title: "Data da Consulta" },
+                { field: "empresa", width: "100px", title: "Empresa" },
+                { field: "preco", title:"Preço", width: "100px" , format: function(value){return "R$ " + value;}},
+                { field: "tipo", title:"IDA / VOLTA", width: "100px" },
+                { field: "data", title: "Data da Viagem"  , format: function(value){return value.substring(8,10)+"/"+value.substring(5,7)+"/"+value.substring(0,4);}},
+                { field: "dataConsulta", title: "Data da Consulta" , format: function(value){return value.substring(8,10)+"/"+value.substring(5,7)+"/"+value.substring(0,4)+" "+value.substring(11,19);}},
                 { field: "origem", title:"Origem", width: "270px" },
                 { field: "destino", title:"Destino", width: "270px" }
 

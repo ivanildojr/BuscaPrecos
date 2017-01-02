@@ -8,6 +8,7 @@ class Precos {
     String origem
     String destino
     Date dataConsulta
+    String empresa
 
 
 
