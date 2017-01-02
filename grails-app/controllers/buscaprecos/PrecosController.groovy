@@ -115,10 +115,11 @@ class PrecosController {
     }
 
     def grafico(){
-        def precosTAM1 = Precos.findAllByOrigemAndDestinoAndEmpresa("NAT","YYZ","TAM")
-        def precosGOL1 = Precos.findAllByOrigemAndDestinoAndEmpresa("NAT","YYZ","GOL")
-        def precosTAM2 = Precos.findAllByOrigemAndDestinoAndEmpresa("YYZ","NAT","TAM")
-        def precosGOL2 = Precos.findAllByOrigemAndDestinoAndEmpresa("YYZ","NAT","GOL")
+        def precosTAM1 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("NAT","YYZ","TAM",Date.parse("yyyy-MM-dd","2017-09-08"))
+        def precosGOL1 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("NAT","YYZ","GOL",Date.parse("yyyy-MM-dd","2017-09-08"))
+        def precosTAM2 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("YYZ","NAT","TAM",Date.parse("yyyy-MM-dd","2017-10-18"))
+        def precosGOL2 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("YYZ","NAT","GOL",Date.parse("yyyy-MM-dd","2017-10-18"))
+
 
 //        def listaTAM1 = new ArrayList()
 //        def index = 0
@@ -132,16 +133,17 @@ class PrecosController {
 //            }
 //        }
 
-        def eixoX1 = precosGOL1.data as JSON
+        def eixoX1 = precosGOL1.dataConsulta as JSON
         def yTAM1 = precosTAM1.preco as JSON
         def yGOL1 = precosGOL1.preco as JSON
-        String titulo1 = "\"Preços de " + precosTAM1.get(0).tipo + " de " + precosTAM1.get(0).origem + " para " + precosTAM1.get(0).destino + "\""
+//        String titulo1 = "\"Preços de " + precosTAM1.get(0).tipo + " de " + precosTAM1.get(0).origem + " para " + precosTAM1.get(0).destino + "\""
+        String titulo1 = "\"Preços TAM  de " + precosTAM1.get(0).origem + "(" + precosTAM1.get(0).data.clearTime() + ")"  + " para " + precosTAM1.get(0).destino + "(" + precosTAM2.get(0).data.clearTime() + ")"  + "\""
 
-        def eixoX2 = precosGOL2.data as JSON
+        def eixoX2 = precosGOL2.dataConsulta as JSON
         def yTAM2 = precosTAM2.preco as JSON
         def yGOL2 = precosGOL2.preco as JSON
-        String titulo2 = "\"Preços de " + precosTAM2.get(0).tipo + " de " + precosTAM2.get(0).origem + " para " + precosTAM2.get(0).destino + "\""
-
+//        String titulo2 = "\"Preços de " + precosTAM2.get(0).tipo + " de " + precosTAM2.get(0).origem + " para " + precosTAM2.get(0).destino + "\""
+        String titulo2 = "\"Preços de GOL de " + precosGOL1.get(0).origem + "(" + precosGOL1.get(0).data.clearTime() + ")" + " para " + precosGOL1.get(0).destino+ "(" + precosGOL2.get(0).data.clearTime() + ")"  + "\""
 
         render(view:"grafico",model:[grafico1:"IDA",titulo1:titulo1,eixoX1:eixoX1,yTAM1:yTAM1,yGOL1:yGOL1,grafico2:"VOLTA"
                                      ,titulo2:titulo2,eixoX2:eixoX2,yTAM2:yTAM2,yGOL2:yGOL2])

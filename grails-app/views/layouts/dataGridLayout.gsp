@@ -29,7 +29,7 @@
                 multiple: true
             },
             paging: {
-                pageSize: 17,
+                pageSize: 10,
                 pageLinksCount: 10
             },
             selection:{

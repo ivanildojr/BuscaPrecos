@@ -58,14 +58,14 @@
             dataSeries: [{
                 seriesType: 'splinearea',
                 applyAnimation: true,
-                collectionAlias: 'TAM',
+                collectionAlias: 'IDA',
                 data: <g:applyCodec encodeAs="none">${yTAM1}</g:applyCodec>
             }, {
                 seriesType: 'splinearea',
 
                 applyAnimation: true,
-                collectionAlias: 'GOL',
-                data: <g:applyCodec encodeAs="none">${yGOL1}</g:applyCodec>
+                collectionAlias: 'VOLTA',
+                data: <g:applyCodec encodeAs="none">${yTAM2}</g:applyCodec>
             }]
         });
 
@@ -96,13 +96,13 @@
             dataSeries: [{
                 seriesType: 'splinearea',
                 applyAnimation: true,
-                collectionAlias: 'TAM',
-                data: <g:applyCodec encodeAs="none">${yTAM2}</g:applyCodec>
+                collectionAlias: 'IDA',
+                data: <g:applyCodec encodeAs="none">${yGOL1}</g:applyCodec>
             }, {
                 seriesType: 'splinearea',
 
                 applyAnimation: true,
-                collectionAlias: 'GOL',
+                collectionAlias: 'VOLTA',
                 data: <g:applyCodec encodeAs="none">${yGOL2}</g:applyCodec>
             }]
         });
