@@ -21,8 +21,18 @@
 <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
 <script type="text/javascript">
     jQuery(function ($) {
+        $("#calendar").shieldCalendar({
+            footer: {
+                enabled: true,
+                footerTemlpate: "{0:dd.MM.yy}"
+            },
+            min: new Date("2009/2/23"),
+            max: new Date("2039/3/1"),
+            value: new Date()
+        });
+
         $("#${grafico1}").shieldChart({
-            seriesPalette: ["#001AAD", "#FF6900"],
+            seriesPalette: ["#001AAD", "#FF6900", "#17BE0A"],
             exportOptions: {
                 image: false,
                 print: false
@@ -58,20 +68,26 @@
             dataSeries: [{
                 seriesType: 'splinearea',
                 applyAnimation: true,
-                collectionAlias: 'IDA',
+                collectionAlias: 'Média',
                 data: <g:applyCodec encodeAs="none">${yTAM1}</g:applyCodec>
             }, {
-                seriesType: 'splinearea',
+                seriesType: 'spline',
 
                 applyAnimation: true,
-                collectionAlias: 'VOLTA',
+                collectionAlias: 'Mínimo',
                 data: <g:applyCodec encodeAs="none">${yTAM2}</g:applyCodec>
+            }, {
+                seriesType: 'spline',
+
+                applyAnimation: true,
+                collectionAlias: 'Máximo',
+                data: <g:applyCodec encodeAs="none">${yTAM3}</g:applyCodec>
             }]
         });
 
 
         $("#${grafico2}").shieldChart({
-            seriesPalette: ["#001AAD", "#FF6900"],
+            seriesPalette: ["#001AAD", "#FF6900", "#17BE0A"],
             exportOptions: {
                 image: false,
                 print: false
@@ -96,14 +112,20 @@
             dataSeries: [{
                 seriesType: 'splinearea',
                 applyAnimation: true,
-                collectionAlias: 'IDA',
+                collectionAlias: 'Média',
                 data: <g:applyCodec encodeAs="none">${yGOL1}</g:applyCodec>
             }, {
-                seriesType: 'splinearea',
+                seriesType: 'spline',
 
                 applyAnimation: true,
-                collectionAlias: 'VOLTA',
+                collectionAlias: 'Mínimo',
                 data: <g:applyCodec encodeAs="none">${yGOL2}</g:applyCodec>
+            }, {
+                seriesType: 'spline',
+
+                applyAnimation: true,
+                collectionAlias: 'Máximo',
+                data: <g:applyCodec encodeAs="none">${yTAM3}</g:applyCodec>
             }]
         });
     });

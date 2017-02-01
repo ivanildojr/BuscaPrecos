@@ -29,7 +29,7 @@ class BuscaPassagemJob implements Job{
         println "Job Name: ${jobKey} - Parametros:  ${origem}-${destino}: ${dataIda} - ${dataVolta} : Adultos/Crianças: ${adultos} / ${criancas}"
     }
 
-    private void buscaGOL(dataLimiteSaida, dataIda, duracao, origem, destino, adultos, criancas) {
+    private void buscaGOL(dataLimiteSaida, dataIda, duracao,String origem, String destino, adultos, criancas) {
         int count = 0
         Date dataLimite = Date.parse("yyyy-MM-dd HH:mm:ss", dataLimiteSaida)
         Date dataInicio = Date.parse("yyyy-MM-dd HH:mm:ss", dataIda)
@@ -38,9 +38,16 @@ class BuscaPassagemJob implements Job{
             String dataIdaFormatada = dataInicio.format("ddMMyyyy")
             String dataVoltaFormatada = dataInicio.plus(Integer.parseInt(duracao)).format("ddMMyyyy")
 
-
-            def origemGol = AirportCodes.findAllByIata_code(origem).get(0).municipality
-            def destinoGol = AirportCodes.findAllByIata_code(destino).get(0).municipality
+            def origemGol = null
+            def destinoGol = null
+            if(origem.equalsIgnoreCase("NAT"))
+                origemGol = AirportCodes.findAllByIata_code(origem).get(0).municipality
+            else
+                origemGol = origem
+            if(destino.equalsIgnoreCase("NAT"))
+                destinoGol = AirportCodes.findAllByIata_code(destino).get(0).municipality
+            else
+                destinoGol = destino
 
             String voosIdaVolta = buscaPrecosGOL.busca(origemGol, destinoGol, dataIdaFormatada, dataVoltaFormatada, adultos, criancas)
 

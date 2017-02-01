@@ -19,17 +19,14 @@ class AgendaConsultaController {
     def buscaAeroportos(String codigo){
         println codigo
 
-//        def aeroportos = AirportCodes.findAllByIata_codeOrNameLike(codigo,"%"+codigo+"%")
         def aeroportos = AirportCodes.findAllByNameLikeOrMunicipalityLikeOrIata_code("%"+codigo+"%","%"+codigo+"%",codigo)
-//        println aeroportos.iata_code + " - " + aeroportos.name
 
         List<String> array = new ArrayList()
         aeroportos.each {
             array.add(it.iata_code + " - " + it.name)
 
         }
-//        println array
-//        render aeroportos as JSON
+
         render array as JSON
 
 

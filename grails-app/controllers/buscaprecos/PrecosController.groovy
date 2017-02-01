@@ -115,37 +115,208 @@ class PrecosController {
     }
 
     def grafico(){
-        def precosTAM1 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("NAT","YYZ","TAM",Date.parse("yyyy-MM-dd","2017-09-08"))
-        def precosGOL1 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("NAT","YYZ","GOL",Date.parse("yyyy-MM-dd","2017-09-08"))
-        def precosTAM2 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("YYZ","NAT","TAM",Date.parse("yyyy-MM-dd","2017-10-18"))
-        def precosGOL2 = Precos.findAllByOrigemAndDestinoAndEmpresaAndData("YYZ","NAT","GOL",Date.parse("yyyy-MM-dd","2017-10-18"))
+        def TAMCriteria = Precos.createCriteria()
+        def queryTAM = TAMCriteria.list{
+            eq("empresa","TAM")
+            and{
+                or{
+                    eq("origem",params.iata_code)
+                    eq("destino",params.iata_code)
+                }
+
+            }
+            and{
+                ge("dataConsulta", new Date().minus(Integer.parseInt(params.vencimento)).clearTime())
+            }
+
+            order("data","asc")
+            projections{
+                groupProperty("data","data")
+
+                property("origem","origem")
+                property("destino","destino")
+                property("empresa","empresa")
+                avg("preco","media")
+                max("preco","maximo")
+                min("preco","minimo")
+            }
+        }
 
 
-//        def listaTAM1 = new ArrayList()
-//        def index = 0
-//        precosTAM1.each {
-//            if(it.first()){
-//                listaTAM1.add(it)
-//            }else{
-//                if(it.preco < listaTAM1.get(index).preco){
-//                    listaTAM1.remove(index)
-//                }
-//            }
-//        }
+        def datasTAM1 = new ArrayList()
+        def precosTAM1 = new ArrayList()
+        def precosMinTAM1 = new ArrayList()
+        def precosMaxTAM1 = new ArrayList()
+        queryTAM.each {
+            datasTAM1.add(it.getAt(0).toString().substring(5,10))
+            precosTAM1.add(it.getAt(4))
+            precosMaxTAM1.add(it.getAt(5))
+            precosMinTAM1.add(it.getAt(6))
+        }
 
-        def eixoX1 = precosGOL1.dataConsulta as JSON
-        def yTAM1 = precosTAM1.preco as JSON
-        def yGOL1 = precosGOL1.preco as JSON
-//        String titulo1 = "\"Preços de " + precosTAM1.get(0).tipo + " de " + precosTAM1.get(0).origem + " para " + precosTAM1.get(0).destino + "\""
-        String titulo1 = "\"Preços TAM  de " + precosTAM1.get(0).origem + "(" + precosTAM1.get(0).data.clearTime() + ")"  + " para " + precosTAM1.get(0).destino + "(" + precosTAM2.get(0).data.clearTime() + ")"  + "\""
+        def GOLCriteria = Precos.createCriteria()
+        def queryGOL = GOLCriteria.list{
+            eq("empresa","GOL")
+            and{
+                or{
+                    eq("origem",params.iata_code)
+                    eq("destino",params.iata_code)
+                }
 
-        def eixoX2 = precosGOL2.dataConsulta as JSON
-        def yTAM2 = precosTAM2.preco as JSON
-        def yGOL2 = precosGOL2.preco as JSON
-//        String titulo2 = "\"Preços de " + precosTAM2.get(0).tipo + " de " + precosTAM2.get(0).origem + " para " + precosTAM2.get(0).destino + "\""
-        String titulo2 = "\"Preços de GOL de " + precosGOL1.get(0).origem + "(" + precosGOL1.get(0).data.clearTime() + ")" + " para " + precosGOL1.get(0).destino+ "(" + precosGOL2.get(0).data.clearTime() + ")"  + "\""
+            }
+            and{
+                ge("dataConsulta",  new Date().minus(Integer.parseInt(params.vencimento)).clearTime())
+            }
+
+            order("data","asc")
+            projections{
+                groupProperty("data","data")
+
+                property("origem","origem")
+                property("destino","destino")
+                property("empresa","empresa")
+                avg("preco","media")
+                max("preco","maximo")
+                min("preco","minimo")
+            }
+        }
+
+
+        def datasGOL1 = new ArrayList()
+        def precosGOL1 = new ArrayList()
+        def precosMinGOL1 = new ArrayList()
+        def precosMaxGOL1 = new ArrayList()
+        queryGOL.each {
+            datasGOL1.add(it.getAt(0).toString().substring(5,10))
+            precosGOL1.add(it.getAt(4))
+            precosMaxGOL1.add(it.getAt(5))
+            precosMinGOL1.add(it.getAt(6))
+        }
+
+
+        def eixoX1 = datasTAM1 as JSON
+        def yTAM1 = precosTAM1 as JSON
+        def yGOL1 = precosGOL1 as JSON
+
+        String titulo1 = "\"Precos medios de Ida ou Volta de/para "+ params.iata_code +" - TAM\""
+
+        def eixoX2 = datasGOL1 as JSON
+        def yTAM2 = precosMinTAM1 as JSON
+        def yGOL2 = precosMinGOL1 as JSON
+        String titulo2 = "\"Precos medios de Ida ou Volta  de/para "+ params.iata_code +" -  GOL\""
+
+        def yTAM3 = precosMaxTAM1 as JSON
+        def yGOL3 = precosMaxGOL1 as JSON
 
         render(view:"grafico",model:[grafico1:"IDA",titulo1:titulo1,eixoX1:eixoX1,yTAM1:yTAM1,yGOL1:yGOL1,grafico2:"VOLTA"
-                                     ,titulo2:titulo2,eixoX2:eixoX2,yTAM2:yTAM2,yGOL2:yGOL2])
+                                     ,titulo2:titulo2,eixoX2:eixoX2,yTAM2:yTAM2,yGOL2:yGOL2,yTAM3:yTAM3,yGOL3:yGOL3])
+    }
+    def graficoDia(){
+        def TAMCriteria = Precos.createCriteria()
+        def queryTAM = TAMCriteria.list{
+            eq("empresa","TAM")
+            and{
+                or{
+                    eq("origem",params.iata_code)
+                    eq("destino",params.iata_code)
+                }
+
+            }
+            and{
+                ge("dataConsulta", new Date().minus(Integer.parseInt(params.vencimento)).clearTime())
+            }
+            and{
+                eq("data", new Date().parse("yyyy-MM-dd",params.dataViagem).clearTime())
+            }
+
+            order("data","asc")
+            projections{
+                groupProperty("dataConsulta","data")
+
+                property("origem","origem")
+                property("destino","destino")
+                property("empresa","empresa")
+                avg("preco","media")
+                max("preco","maximo")
+                min("preco","minimo")
+            }
+        }
+
+        println queryTAM.toString()
+
+        def datasTAM1 = new ArrayList()
+        def precosTAM1 = new ArrayList()
+        def precosMinTAM1 = new ArrayList()
+        def precosMaxTAM1 = new ArrayList()
+        queryTAM.each {
+            datasTAM1.add(it.getAt(0).toString().substring(5,10))
+            precosTAM1.add(it.getAt(4))
+            precosMaxTAM1.add(it.getAt(5))
+            precosMinTAM1.add(it.getAt(6))
+        }
+
+        def GOLCriteria = Precos.createCriteria()
+        def queryGOL = GOLCriteria.list{
+            eq("empresa","GOL")
+            and{
+                or{
+                    eq("origem",params.iata_code)
+                    eq("destino",params.iata_code)
+                }
+
+            }
+            and{
+                ge("dataConsulta",  new Date().minus(Integer.parseInt(params.vencimento)).clearTime())
+            }
+            and{
+                eq("data", new Date().parse("yyyy-MM-dd",params.dataViagem).clearTime())
+            }
+
+            order("data","asc")
+            projections{
+                groupProperty("dataConsulta","data")
+
+                property("origem","origem")
+                property("destino","destino")
+                property("empresa","empresa")
+                avg("preco","media")
+                max("preco","maximo")
+                min("preco","minimo")
+            }
+        }
+
+
+        def datasGOL1 = new ArrayList()
+        def precosGOL1 = new ArrayList()
+        def precosMinGOL1 = new ArrayList()
+        def precosMaxGOL1 = new ArrayList()
+        queryGOL.each {
+            datasGOL1.add(it.getAt(0).toString().substring(5,10))
+            precosGOL1.add(it.getAt(4))
+            precosMaxGOL1.add(it.getAt(5))
+            precosMinGOL1.add(it.getAt(6))
+        }
+
+
+        def eixoX1 = datasTAM1 as JSON
+        def yTAM1 = precosTAM1 as JSON
+        def yGOL1 = precosGOL1 as JSON
+
+        String titulo1 = "\"Precos para o dia " + params.dataViagem + " de/para " + params.iata_code +" - TAM\""
+
+        def eixoX2 = datasGOL1 as JSON
+        def yTAM2 = precosMinTAM1 as JSON
+        def yGOL2 = precosMinGOL1 as JSON
+        String titulo2 = "\"Precos para o dia " + params.dataViagem + " de/para " + params.iata_code +" - GOL\""
+
+        def yTAM3 = precosMaxTAM1 as JSON
+        def yGOL3 = precosMaxGOL1 as JSON
+
+        render(view:"grafico",model:[grafico1:"IDA",titulo1:titulo1,eixoX1:eixoX1,yTAM1:yTAM1,yGOL1:yGOL1,grafico2:"VOLTA"
+                                     ,titulo2:titulo2,eixoX2:eixoX2,yTAM2:yTAM2,yGOL2:yGOL2,yTAM3:yTAM3,yGOL3:yGOL3])
+    }
+    def indexGrafico(){
+        println params
+        render(view:"indexGrafico")
     }
 }

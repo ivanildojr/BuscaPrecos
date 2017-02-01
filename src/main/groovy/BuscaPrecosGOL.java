@@ -1,3 +1,5 @@
+import buscaprecos.LogConsultas;
+import buscaprecos.LogConsultasController;
 import buscaprecos.Precos;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.google.common.collect.ImmutableMap;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +53,14 @@ public class BuscaPrecosGOL {
         try {
             driver.get(url);
 
+//            LogConsultas log = new LogConsultas();
+//            log.setConsulta(url);
+//            log.setEmpresa("GOL");
+//            log.setDataConsulta(new Date());
+//            LogConsultasController controler = new LogConsultasController();
+//            controler.save(log);
+
+
             Actions actions = new Actions(driver);
             actions.moveToElement(driver.findElement(By.name("ControlGroupSearchView$AvailabilitySearchInputSearchView$TextBoxMarketOrigin1"))).build().perform();
             new WebDriverWait(driver, 1).until(ExpectedConditions.visibilityOfElementLocated(By.name("ControlGroupSearchView$AvailabilitySearchInputSearchView$TextBoxMarketOrigin1"))).click();
@@ -63,34 +74,43 @@ public class BuscaPrecosGOL {
 
             WebElement destinoTxt = driver.findElement(By.name("ControlGroupSearchView$AvailabilitySearchInputSearchView$TextBoxMarketDestination1"));
             destinoTxt.sendKeys(destino);
+            destinoTxt.sendKeys(Keys.ENTER);
+
+            Thread.sleep(2000);
+
+            System.out.println("Destino: " + destino );
 
 
             WebElement dataIda = driver.findElement(By.id("dateIda"));
             dataIda.sendKeys(dataPartida);
             dataIda.sendKeys(Keys.TAB);
 
+            Thread.sleep(2000);
 
 
             WebElement dataVolta = driver.findElement(By.id("dateVolta"));
             dataVolta.sendKeys(dataRetorno);
             dataVolta.sendKeys(Keys.TAB);
 
+            Thread.sleep(2000);
+
             Select adultos = new Select(driver.findElement(
                     By.name("ControlGroupSearchView$AvailabilitySearchInputSearchView$DropDownListPassengerType_ADT")));
             adultos.selectByValue(qtdeAdultos);
+
+            Thread.sleep(2000);
 
             Select criancas = new Select(driver.findElement(
                     By.name("ControlGroupSearchView$AvailabilitySearchInputSearchView$DropDownListPassengerType_CHD")));
             criancas.selectByValue(qtdeCriancas);
 
-
+            Thread.sleep(2000);
 
 
             WebElement botao = driver.findElement(By.name("ControlGroupSearchView$ButtonSubmit"));
             botao.click();
 
-
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
             Document doc = Jsoup.parse(driver.getPageSource());
             Element ida = doc.getElementById("ida");

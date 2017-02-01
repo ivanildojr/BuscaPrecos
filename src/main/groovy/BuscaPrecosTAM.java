@@ -1,3 +1,5 @@
+import buscaprecos.LogConsultas;
+import buscaprecos.LogConsultasController;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -7,9 +9,16 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.quartz.utils.PoolingConnectionProvider.DB_URL;
 
 
 /**
@@ -52,6 +61,15 @@ public class BuscaPrecosTAM {
         Element ida = null,volta=null;
         try {
             ghostDriver.get(url);
+
+//            LogConsultas log = new LogConsultas();
+//            log.setConsulta(url);
+//            log.setEmpresa("GOL");
+//            log.setDataConsulta(new Date());
+//            LogConsultasController controler = new LogConsultasController();
+//            controler.save(log);
+
+
             Document doc = null;
             doc = Jsoup.parse(ghostDriver.getPageSource());
             ida = doc.getElementById("outbound_list_flight");
